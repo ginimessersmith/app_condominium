@@ -1,7 +1,9 @@
-
+import 'package:condominium/auth/presentation/providers/auth_provider.dart';
+import 'package:condominium/auth/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:condominium/config/router/app_router.dart';
 import 'package:condominium/shared/widgets/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -38,7 +40,7 @@ class LoginScreen extends StatelessWidget {
                         topLeft: Radius.circular(100),
                         topRight: Radius.circular(100)),
                   ),
-                  child: const _LoginForm(),
+                  child: _LoginForm(),
                 )
               ],
             ),
@@ -49,20 +51,32 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class _LoginForm extends StatefulWidget {
-  const _LoginForm();
-
+class _LoginForm extends ConsumerStatefulWidget {
   @override
   _LoginFormState createState() => _LoginFormState();
 }
 
-class _LoginFormState extends State<_LoginForm> {
-  final TextEditingController _emailController = TextEditingController();
+class _LoginFormState extends ConsumerState<_LoginForm> {
+  bool isProgressIndicator = false;
+
+  void showSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final loginForm = ref.watch(loginFormProvider);
     final textStyles = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
+    //? escuchar los cambios
+    ref.listen(authProvider, (previous, next) {
+      if (next.errorMessage.isEmpty) return;
+      // print(next.errorMessage);
+      showSnackbar(context, next.errorMessage);
+    });
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -75,14 +89,21 @@ class _LoginFormState extends State<_LoginForm> {
           ),
           const SizedBox(height: 90),
           CustomTextFormField(
-            controller: _emailController,
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
+            onChanged: (value) =>
+                ref.read(loginFormProvider.notifier).onEmailChange(value),
+            errorMessage:
+                loginForm.isFormPosted ? loginForm.email.errorMessage : null,
           ),
           const SizedBox(height: 30),
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
+            onChanged: (value) =>
+                ref.read(loginFormProvider.notifier).onPasswordChange(value),
+            errorMessage:
+                loginForm.isFormPosted ? loginForm.password.errorMessage : null,
           ),
           const SizedBox(height: 30),
           SizedBox(
@@ -91,20 +112,25 @@ class _LoginFormState extends State<_LoginForm> {
             child: CustomFilledButton(
               text: 'Ingresar',
               buttonColor: colors.primary,
-              onPressed: () {
-                final email = _emailController.text.trim();
-                if (email == 'tecnico') {
-                  appRouter.go('/perfil_technical');
-                } else if (email == 'propietario') {
-                  appRouter.go('/perfil_owner');
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Correo no válido')),
-                  );
-                }
-              },
+              onPressed: loginForm.isPosting
+                  ? null
+                  : () async {
+                      setState(() {
+                        isProgressIndicator = true;
+                      });
+                      await ref
+                          .read(loginFormProvider.notifier)
+                          .onFormSubmith();
+                      setState(() {
+                        isProgressIndicator = false;
+                      });
+                    },
             ),
           ),
+          const SizedBox(
+            height: 10,
+          ),
+          if (isProgressIndicator) const LinearProgressIndicator(),
           const Spacer(flex: 2),
         ],
       ),

@@ -1,0 +1,1 @@
+export 'package:condominium/department/infrastructure/mappers/department.mapper.dart';

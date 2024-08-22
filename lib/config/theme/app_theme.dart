@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 const colorSeed = Color(0xECF2FF);
 const scaffoldBackgroundColor = Color(0xFFF8F7F7);
 
-const List<Color> colorThemes = [
+List<Color> colorThemes = [
+  Color(0xECF2FF),
   Color(0x5D87FF),
   Color(0x10BD9D),
   Color(0xFA896B),
@@ -13,42 +13,39 @@ const List<Color> colorThemes = [
 ];
 
 class AppTheme {
+  final int selectedColor;
+
+  AppTheme({required this.selectedColor});
 
   ThemeData getTheme() => ThemeData(
-    ///* General
-    useMaterial3: true,
-    colorSchemeSeed: colorSeed,
 
-    ///* Texts
-    textTheme: TextTheme(
-      titleLarge: GoogleFonts.montserratAlternates()
-        .copyWith( fontSize: 40, fontWeight: FontWeight.bold ),
-      titleMedium: GoogleFonts.montserratAlternates()
-        .copyWith( fontSize: 30, fontWeight: FontWeight.bold ),
-      titleSmall: GoogleFonts.montserratAlternates()
-        .copyWith( fontSize: 20 )
-    ),
+      ///* General
+      useMaterial3: true,
+      colorSchemeSeed: colorThemes[selectedColor],
 
-    ///* Scaffold Background Color
-    scaffoldBackgroundColor: scaffoldBackgroundColor,
-    
+      ///* Texts
+      textTheme: TextTheme(
+          titleLarge: GoogleFonts.montserratAlternates()
+              .copyWith(fontSize: 40, fontWeight: FontWeight.bold),
+          titleMedium: GoogleFonts.montserratAlternates()
+              .copyWith(fontSize: 30, fontWeight: FontWeight.bold),
+          titleSmall:
+              GoogleFonts.montserratAlternates().copyWith(fontSize: 20)),
 
-    ///* Buttons
-    filledButtonTheme: FilledButtonThemeData(
-      style: ButtonStyle(
-        textStyle: MaterialStatePropertyAll(
-          GoogleFonts.montserratAlternates()
-            .copyWith(fontWeight: FontWeight.w700)
-          )
-      )
-    ),
+      ///* Scaffold Background Color
+      scaffoldBackgroundColor: scaffoldBackgroundColor,
 
-    ///* AppBar
-    appBarTheme: AppBarTheme(
-      color: scaffoldBackgroundColor,
-      titleTextStyle: GoogleFonts.montserratAlternates()
-        .copyWith( fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black ),
-    )
-  );
+      ///* Buttons
+      filledButtonTheme: FilledButtonThemeData(
+          style: ButtonStyle(
+              textStyle: MaterialStatePropertyAll(
+                  GoogleFonts.montserratAlternates()
+                      .copyWith(fontWeight: FontWeight.w700)))),
 
+      ///* AppBar
+      appBarTheme: AppBarTheme(
+        color: scaffoldBackgroundColor,
+        titleTextStyle: GoogleFonts.montserratAlternates().copyWith(
+            fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),
+      ));
 }

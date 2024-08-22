@@ -1,22 +1,25 @@
+import 'package:condominium/auth/presentation/providers/auth_provider.dart';
 import 'package:condominium/config/router/app_router.dart';
 import 'package:condominium/shared/widgets/custom_filled_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class SideMenuOwner extends StatefulWidget {
+class SideMenuOwner extends ConsumerStatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const SideMenuOwner({super.key, required this.scaffoldKey});
 
   @override
-  State<SideMenuOwner> createState() => _SideMenuOwnerState();
+  _SideMenuOwnerState createState() => _SideMenuOwnerState();
 }
 
-class _SideMenuOwnerState extends State<SideMenuOwner> {
+class _SideMenuOwnerState extends ConsumerState<SideMenuOwner> {
   int navDrawerIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final authProviderNotifier = ref.watch(authProvider);
     final hasNotch = MediaQuery.of(context).viewPadding.top > 35;
     final textStyles = Theme.of(context).textTheme;
 
@@ -44,7 +47,7 @@ class _SideMenuOwnerState extends State<SideMenuOwner> {
               setState(() {
                 navDrawerIndex = 0;
               });
-              appRouter.go('/perfil_owner');
+              // appRouter.go('/perfil_owner');
               widget.scaffoldKey.currentState?.closeDrawer();
             },
             selected: navDrawerIndex == 0,
@@ -57,7 +60,7 @@ class _SideMenuOwnerState extends State<SideMenuOwner> {
               setState(() {
                 navDrawerIndex = 1;
               });
-              appRouter.go('/department');
+              // appRouter.go('/department');
               widget.scaffoldKey.currentState?.closeDrawer();
             },
             selected: navDrawerIndex == 1,
@@ -70,7 +73,7 @@ class _SideMenuOwnerState extends State<SideMenuOwner> {
               setState(() {
                 navDrawerIndex = 1;
               });
-              appRouter.go('/pay');
+              // appRouter.go('/pay');
               widget.scaffoldKey.currentState?.closeDrawer();
             },
             selected: navDrawerIndex == 1,
@@ -86,8 +89,8 @@ class _SideMenuOwnerState extends State<SideMenuOwner> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: CustomFilledButton(
-                onPressed: () {
-                  appRouter.go('/login');
+                onPressed: () async{
+                  await ref.read(authProvider.notifier).logout();
                 },
                 text: 'Cerrar sesión'),
           ),

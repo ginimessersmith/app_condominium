@@ -1,0 +1,1 @@
+export 'package:condominium/perfil/presentation/widget/custom_appBar_profile.widget.dart';

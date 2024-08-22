@@ -1,18 +1,20 @@
+import 'package:condominium/auth/presentation/providers/auth_provider.dart';
 import 'package:condominium/config/router/app_router.dart';
 import 'package:condominium/shared/widgets/custom_filled_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class SideMenu extends StatefulWidget {
+class SideMenu extends ConsumerStatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const SideMenu({super.key, required this.scaffoldKey});
 
   @override
-  State<SideMenu> createState() => _SideMenuState();
+  _SideMenuState createState() => _SideMenuState();
 }
 
-class _SideMenuState extends State<SideMenu> {
+class _SideMenuState extends ConsumerState<SideMenu> {
   int navDrawerIndex = 0;
 
   @override
@@ -31,7 +33,7 @@ class _SideMenuState extends State<SideMenu> {
               children: [
                 Text('Saludos', style: textStyles.titleMedium),
                 const SizedBox(height: 4),
-                Text('Tennico', style: textStyles.titleSmall),
+                Text('Tecnico', style: textStyles.titleSmall),
               ],
             ),
           ),
@@ -44,7 +46,7 @@ class _SideMenuState extends State<SideMenu> {
               setState(() {
                 navDrawerIndex = 0;
               });
-              appRouter.go('/perfil_technical');
+              // appRouter.go('/perfil_technical');
               widget.scaffoldKey.currentState?.closeDrawer();
             },
             selected: navDrawerIndex == 0,
@@ -57,7 +59,7 @@ class _SideMenuState extends State<SideMenu> {
               setState(() {
                 navDrawerIndex = 1;
               });
-              appRouter.go('/meter');
+              // appRouter.go('/meter');
               widget.scaffoldKey.currentState?.closeDrawer();
             },
             selected: navDrawerIndex == 1,
@@ -73,8 +75,8 @@ class _SideMenuState extends State<SideMenu> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: CustomFilledButton(
-                onPressed: () {
-                  appRouter.go('/login');
+                onPressed: ()async {
+                 await ref.read(authProvider.notifier).logout();
                 },
                 text: 'Cerrar sesión'),
           ),

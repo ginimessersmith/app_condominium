@@ -8,7 +8,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
-  final TextEditingController? controller; // Nuevo parámetro
+  // final TextEditingController? controller; 
 
   const CustomTextFormField({
     super.key,
@@ -19,7 +19,7 @@ class CustomTextFormField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.onChanged,
     this.validator,
-    this.controller, // Añadir el nuevo parámetro al constructor
+    // this.controller, 
   });
 
   @override
@@ -50,7 +50,7 @@ class CustomTextFormField extends StatelessWidget {
         ],
       ),
       child: TextFormField(
-        controller: controller, // Usar el controlador si está disponible
+        // controller: controller, 
         onChanged: onChanged,
         validator: validator,
         obscureText: obscureText,
@@ -62,7 +62,7 @@ class CustomTextFormField extends StatelessWidget {
           enabledBorder: border,
           focusedBorder: border,
           errorBorder: border.copyWith(
-              borderSide: BorderSide(color: Colors.red.shade800)),
+              borderSide: BorderSide(color: Colors.white)),
           focusedErrorBorder: border.copyWith(
               borderSide: BorderSide(color: Colors.red.shade800)),
           isDense: true,
