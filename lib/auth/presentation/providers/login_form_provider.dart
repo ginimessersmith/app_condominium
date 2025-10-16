@@ -81,7 +81,7 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
 
     state = state.copyWith(isPosting: true);
 
-    // print(state);
+    print(state);
     await loginUserCallBack(state.email.value, state.password.value);
     state = state.copyWith(isPosting: false);
   }

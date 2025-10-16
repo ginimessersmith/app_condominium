@@ -1,13 +1,16 @@
 import 'package:condominium/auth/presentation/providers/auth_provider.dart';
-import 'package:condominium/condominium/presentation/condominium_screen.dart';
+import 'package:condominium/condominium/presentation/providers/condiminium_by_tech_provider.dart';
+import 'package:condominium/condominium/presentation/screens/condominium_screen.dart';
 import 'package:condominium/config/router/app_router_notifier.dart';
 import 'package:condominium/department/presentation/screens/department_screen.dart';
-import 'package:condominium/meter/presentation/screens/meter_screen.dart';
-import 'package:condominium/pay/presentation/screens/pay_screen.dart';
+import 'package:condominium/department/presentation/screens/one_department_screen.dart';
+import 'package:condominium/meter/domain/entities/meter.entity.dart';
+import 'package:condominium/meter/presentation/screens/screen.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../auth/presentation/screens/screens.dart';
+import '../../pay/presentation/screens/screens.dart';
 import '../../perfil/presentation/screens/screen.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -36,19 +39,66 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
         GoRoute(
           path: '/perfil_owner',
-          builder: (context, state) => OwnerProfileScreen(),
+          builder: (context, state) => const OwnerProfileScreen(),
         ),
         GoRoute(
           path: '/department',
-          builder: (context, state) => DepartmentScreen(),
+          builder: (context, state) => const DepartmentScreen(),
+          routes: [
+            GoRoute(
+              path: 'oneDepartment/:id',
+              builder: (context, state) {
+                final departmentId = state.pathParameters['id'] ?? 'no-id';
+                return OneDepartmentScreen(
+                  departmentId: departmentId,
+                );
+              },
+            ),
+          ],
         ),
         GoRoute(
-          path: '/meter',
-          builder: (context, state) => MeterScreen(),
-        ),
+            path: '/meter',
+            builder: (context, state) {
+              final condominiumState = ref.watch(condominiumByTechProvider);
+
+              late String id = 'no-token';
+              if (condominiumState.condominiumByTech?.id != null) {
+                id = condominiumState.condominiumByTech!.id;
+              }
+              return MeterScreen(
+                idCondominium: id,
+              );
+            },
+            routes: [
+              GoRoute(
+                path: 'create-meter',
+                builder: (context, state) => const CreateMeterScreen(),
+              ),
+              GoRoute(
+                  path: 'one-meter',
+                  builder: (context, state) {
+                    final meter = state.extra as MeterEntity;
+                    return OneMeterScreen(oneMeter: meter);
+                  }),
+            ]),
         GoRoute(
           path: '/pay',
-          builder: (context, state) => PayScreen(),
+          builder: (context, state) => const PayScreen(),
+          routes: [
+            GoRoute(
+              path: 'onePay/:id',
+              builder: (context, state) {
+                final idParameter = state.pathParameters['id'] ?? 'no id';
+                return OnePayScreen(idPay: idParameter);
+              },
+            ),
+            GoRoute(
+              path: 'listPayUnPaid',
+              builder: (context, state) {
+                return const ListPayUnPaidScreen();
+              },
+            ),
+          ],
         ),
         GoRoute(
           path: '/',
@@ -76,7 +126,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           if (isGoinTo == '/login' || isGoinTo == '/splash') {
             if (nameRole != null) {
               if (nameRole == 'TECNICO') return '/perfil_technical';
-              if (nameRole == 'PROPIETARIO') return '/perfil_owner';
+              // if (nameRole == 'PROPIETARIO') return '/perfil_owner';
+              if (nameRole == 'PROPIETARIO') return '/pay';
             } else {
               return '/login';
             }

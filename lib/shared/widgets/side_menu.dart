@@ -1,5 +1,6 @@
 import 'package:condominium/auth/presentation/providers/auth_provider.dart';
 import 'package:condominium/config/router/app_router.dart';
+import 'package:condominium/shared/providers/drawnerProvider.dart';
 import 'package:condominium/shared/widgets/custom_filled_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,11 +16,12 @@ class SideMenu extends ConsumerStatefulWidget {
 }
 
 class _SideMenuState extends ConsumerState<SideMenu> {
-  int navDrawerIndex = 0;
+  // int navDrawerIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final hasNotch = MediaQuery.of(context).viewPadding.top > 35;
+    final navDrawerIndex = ref.watch(drawerIndexProvider);
     final textStyles = Theme.of(context).textTheme;
 
     return Drawer(
@@ -43,10 +45,8 @@ class _SideMenuState extends ConsumerState<SideMenu> {
             text: 'Mi Perfil',
             icon: Icons.home_outlined,
             onTap: () {
-              setState(() {
-                navDrawerIndex = 0;
-              });
-              // appRouter.go('/perfil_technical');
+              ref.read(drawerIndexProvider.notifier).setIndex(0);
+              context.push('/perfil_technical');
               widget.scaffoldKey.currentState?.closeDrawer();
             },
             selected: navDrawerIndex == 0,
@@ -56,10 +56,8 @@ class _SideMenuState extends ConsumerState<SideMenu> {
             text: 'Mis Mediciones',
             icon: Icons.settings_applications,
             onTap: () {
-              setState(() {
-                navDrawerIndex = 1;
-              });
-              // appRouter.go('/meter');
+              ref.read(drawerIndexProvider.notifier).setIndex(1);
+              context.push('/meter');
               widget.scaffoldKey.currentState?.closeDrawer();
             },
             selected: navDrawerIndex == 1,
@@ -75,8 +73,8 @@ class _SideMenuState extends ConsumerState<SideMenu> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: CustomFilledButton(
-                onPressed: ()async {
-                 await ref.read(authProvider.notifier).logout();
+                onPressed: () async {
+                  await ref.read(authProvider.notifier).logout();
                 },
                 text: 'Cerrar sesión'),
           ),

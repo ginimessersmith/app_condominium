@@ -6,7 +6,7 @@ class TechnicalMapper {
         id: json["id"],
         specialty: json["specialty"],
         contractDate: DateTime.parse(json["contract_date"]),
-        user: UserMapper.userJsonToEntity(json["user"]),
+        // user: UserMapper.userJsonToEntity(json["user"]),
     );
 }
 

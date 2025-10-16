@@ -7,11 +7,11 @@ import 'package:condominium/pay/domain/domain_pay.dart';
 class ManagerMapper {
   static ManagerEntity managerJsonToEntity(Map<String, dynamic> json) =>
       ManagerEntity(
-        condominium: List<CondominiumEntity>.from(json["condominium"].map((x) => x)),
-        department: List<DepartmentEntity>.from(json["department"].map((x) => x)),
-        pay: List<PayEntity>.from(json["pay"].map((x) => x)),
+        // condominium: List<CondominiumEntity>.from(json["condominium"].map((x) => x)),
+        // department: List<DepartmentEntity>.from(json["department"].map((x) => x)),
+        // pay: List<PayEntity>.from(json["pay"].map((x) => x)),
         id: json["id"],
         responsibility: json["responsibility"],
-        user: UserMapper.userJsonToEntity(json["user"]),
+        // user: UserMapper.userJsonToEntity(json["user"]),
       );
 }

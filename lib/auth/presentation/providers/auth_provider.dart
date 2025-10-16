@@ -1,8 +1,8 @@
 import 'package:condominium/auth/domain/domain.dart';
-import 'package:condominium/auth/infrastructure/errors/auth_errors.dart';
 import 'package:condominium/auth/infrastructure/infrastructure.dart';
 import 'package:condominium/shared/services/key_value_store_service.dart';
 import 'package:condominium/shared/services/key_value_store_service_impl.dart';
+import 'package:condominium/shared/shared.dart';
 // import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -50,6 +50,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required this.keyValueStorageServices,
   }) : super(AuthState()) {
     checkAuthStatus();
+   
   }
 
   Future<void> loginUser(String email, String pass) async {
@@ -64,11 +65,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   _setLoggedUser(UserEntity user) async {
+    print(user.role);
     await keyValueStorageServices.setKeyValue('token', user.token);
 
     await keyValueStorageServices.setKeyValue('idUser', user.id);
+
     await keyValueStorageServices.setKeyValue('idRole', user.role.id);
     await keyValueStorageServices.setKeyValue('nameRole', user.role.name);
+
     state = state.copyWith(
       user: user,
       authStatus: AuthStatus.authenticated,
@@ -102,7 +106,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   String? getUserRole() {
-    return state.user?.role.name;
+    return state.user?.role?.name;
   }
 
   UserEntity? getUser() {

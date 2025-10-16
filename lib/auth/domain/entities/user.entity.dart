@@ -56,7 +56,7 @@ class UserEntity {
         "updated_at": updatedAt.toIso8601String(),
         "type_user": typeUser,
         "pay": List<dynamic>.from(pay.map((x) => x.toJson())),
-        "role": role.toJson(),
+        "role":role.toJson(),//todo verificar
         "token": token,
       };
 }

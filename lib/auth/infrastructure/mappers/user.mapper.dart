@@ -17,8 +17,11 @@ class UserMapper {
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
         typeUser: json["type_user"],
-        pay: List<PayEntity>.from(json["pay"].map((x) => PayMapper.payJsonToEntity(x))),
-        role: RoleMapper.roleJsonToEntity(json["role"]),
+        pay: json["pay"] == null
+            ? List<PayEntity>.from(
+                json["pay"].map((x) => PayMapper.payJsonToEntity(x)))
+            : [],
+        role:RoleMapper.roleJsonToEntity(json["role"]),
         token: json["token"],
-    );
+      );
 }

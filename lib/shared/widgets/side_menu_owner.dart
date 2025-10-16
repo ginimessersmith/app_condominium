@@ -1,5 +1,7 @@
+import 'package:condominium/auth/domain/domain.dart';
 import 'package:condominium/auth/presentation/providers/auth_provider.dart';
-import 'package:condominium/config/router/app_router.dart';
+import 'package:condominium/shared/providers/drawnerProvider.dart';
+
 import 'package:condominium/shared/widgets/custom_filled_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,11 +17,12 @@ class SideMenuOwner extends ConsumerStatefulWidget {
 }
 
 class _SideMenuOwnerState extends ConsumerState<SideMenuOwner> {
-  int navDrawerIndex = 0;
+  // late int navDrawerIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final authProviderNotifier = ref.watch(authProvider);
+    final UserEntity? user = ref.watch(authProvider.notifier).getUser();
+    final navDrawerIndex = ref.watch(drawerIndexProvider);
     final hasNotch = MediaQuery.of(context).viewPadding.top > 35;
     final textStyles = Theme.of(context).textTheme;
 
@@ -34,7 +37,8 @@ class _SideMenuOwnerState extends ConsumerState<SideMenuOwner> {
               children: [
                 Text('Saludos', style: textStyles.titleMedium),
                 const SizedBox(height: 4),
-                Text('Propietario', style: textStyles.titleSmall),
+                Text(user != null ? user.fullname : '',
+                    style: textStyles.titleSmall),
               ],
             ),
           ),
@@ -44,10 +48,8 @@ class _SideMenuOwnerState extends ConsumerState<SideMenuOwner> {
             text: 'Mi Perfil',
             icon: Icons.home_outlined,
             onTap: () {
-              setState(() {
-                navDrawerIndex = 0;
-              });
-              // appRouter.go('/perfil_owner');
+              ref.read(drawerIndexProvider.notifier).setIndex(0);
+              context.push('/perfil_owner');
               widget.scaffoldKey.currentState?.closeDrawer();
             },
             selected: navDrawerIndex == 0,
@@ -57,10 +59,9 @@ class _SideMenuOwnerState extends ConsumerState<SideMenuOwner> {
             text: 'Mis Departamentos',
             icon: Icons.maps_home_work,
             onTap: () {
-              setState(() {
-                navDrawerIndex = 1;
-              });
+              ref.read(drawerIndexProvider.notifier).setIndex(1);
               // appRouter.go('/department');
+              context.push('/department');
               widget.scaffoldKey.currentState?.closeDrawer();
             },
             selected: navDrawerIndex == 1,
@@ -70,13 +71,11 @@ class _SideMenuOwnerState extends ConsumerState<SideMenuOwner> {
             text: 'Mis Pagos',
             icon: Icons.paid_outlined,
             onTap: () {
-              setState(() {
-                navDrawerIndex = 1;
-              });
-              // appRouter.go('/pay');
+             ref.read(drawerIndexProvider.notifier).setIndex(2);
+              context.push('/pay');
               widget.scaffoldKey.currentState?.closeDrawer();
             },
-            selected: navDrawerIndex == 1,
+            selected: navDrawerIndex == 2,
           ),
           const Padding(
             padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
@@ -89,7 +88,8 @@ class _SideMenuOwnerState extends ConsumerState<SideMenuOwner> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: CustomFilledButton(
-                onPressed: () async{
+                onPressed: () async {
+                  ref.read(drawerIndexProvider.notifier).setIndex(0);
                   await ref.read(authProvider.notifier).logout();
                 },
                 text: 'Cerrar sesión'),

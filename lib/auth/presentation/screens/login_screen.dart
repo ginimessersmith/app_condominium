@@ -25,7 +25,7 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 80),
                 // Icon Banner
                 const Icon(
-                  Icons.add_to_home_screen,
+                  Icons.message,
                   color: Colors.white,
                   size: 100,
                 ),
